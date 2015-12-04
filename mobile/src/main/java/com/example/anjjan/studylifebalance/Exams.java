@@ -105,7 +105,7 @@ public class Exams extends AppCompatActivity {
                 String dateTime = dateFormat.format(dateT) + "     " + time;
                 String test = "???";
                 String test2 = "2 ???";
-                if (savedChecker.isExist(subject, dateTime)) {
+                if (savedChecker.isExist(subject)) {
                     test = "This exam schedule exists.";
                     test2 = "Please enter a new one";
                     textText.setText(test);
@@ -120,7 +120,7 @@ public class Exams extends AppCompatActivity {
                     // if saved success, go to navMain, otherwise return to enter again
                     if (savedChecker.createExam(subject, dateTime, seat, room)) {
 
-                        if (savedChecker.isExist(subject, dateTime)) {
+                        if (savedChecker.isExist(subject)) {
                             test2 = "Your exam schedule has been saved.";
                             textText2.setText(test2);
 
@@ -145,6 +145,7 @@ public class Exams extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    // set alarm manager to send notifications once a exam is successfully created
     public void setNotification(String seat, String room) {
         long timeNow = Calendar.getInstance().getTimeInMillis();
         long timeHour = Calendar.getInstance().getTime().getHours() * 3600000;
@@ -160,6 +161,8 @@ public class Exams extends AppCompatActivity {
 
         long intervalOneHour = selectedTime - 3600000;
         long intervalOneDay = selectedTime  -  86400000;
+        long intervalThreeDay = selectedTime  -  86400000 * 3;
+        long intervalOneWeek = selectedTime  -  86400000 * 7;
         AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         AlarmManager alarmMgr2 = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(Exams.this, ExamNotificationReceiver.class);
@@ -177,15 +180,24 @@ public class Exams extends AppCompatActivity {
         b.putLong("time", timeNow+30000);
         b.putString("subject", subject);
         intent.putExtra("bundle", b);*/
+
         PendingIntent alarmIntent = PendingIntent.getBroadcast(Exams.this, unique, intent, 0);
         PendingIntent alarmIntent2 = PendingIntent.getBroadcast(Exams.this, (unique + 1), intent, 0);
+        PendingIntent alarmIntent3 = PendingIntent.getBroadcast(Exams.this, (unique + 2), intent, 0);
+        PendingIntent alarmIntent4 = PendingIntent.getBroadcast(Exams.this, (unique + 3), intent, 0);
         // set for 1 day early;
 
         //alarmMgr.set(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis() + 30000, alarmIntent);
+
+        //testing
         alarmMgr.set(AlarmManager.RTC, selectedTime - 60000, alarmIntent);
         alarmMgr2.set(AlarmManager.RTC, selectedTime - 180000, alarmIntent2);
+
+        // set for 1 week/3 days/1 day/1 hour eraly
         //alarmMgr.set(AlarmManager.RTC, intervalOneHour, alarmIntent);
         //alarmMgr2.set(AlarmManager.RTC, intervalOneDay, alarmIntent);
+        //alarmMgr3.set(AlarmManager.RTC, intervalThreeHour, alarmIntent);
+        //alarmMgr4.set(AlarmManager.RTC, intervalOneWeek, alarmIntent);
 
     }
     @Override

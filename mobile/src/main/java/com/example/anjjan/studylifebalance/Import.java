@@ -2,6 +2,8 @@ package com.example.anjjan.studylifebalance;
 
 
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.os.Bundle;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -25,8 +27,10 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -35,10 +39,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import com.example.anjjan.studylifebalance.TasksDB;
 public class Import extends AppCompatActivity {
@@ -53,6 +54,9 @@ public class Import extends AppCompatActivity {
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { CalendarScopes.CALENDAR_READONLY};
+    TasksDB tasksDB;// = new TasksDB(getApplicationContext());
+    List<Task> noti;
+    Button saved;
     /**
      * Create the main activity.
      * @param savedInstanceState previously saved instance data.
@@ -76,6 +80,68 @@ public class Import extends AppCompatActivity {
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff())
                 .setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent newtask = new Intent(getBaseContext(),NavMainActivity.class);
+                startActivity(newtask);
+            }
+        });
+        tasksDB = new TasksDB(getApplicationContext());
+        noti = new ArrayList<>();
+        saved = (Button) findViewById(R.id.saved);
+        saved.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               saveFinalResult();
+            }
+        });
+    }
+
+    public void saveFinalResult(){
+        for(Task curTask: noti) {
+            String subject = curTask.getSubject();
+            String dateTime = curTask.getTaskDate();
+            tasksDB.insertTask(subject, dateTime, "", "");
+            setNotification(subject, dateTime);
+
+            /*long timeNow = java.util.Calendar.getInstance().getTimeInMillis();
+            int unique = (int) timeNow;
+
+            /*long year2000 = 946766701 * 1000;
+
+            int year = Integer.parseInt(dateTime.substring(6,10)) - 2000;
+            int month = Integer.parseInt(dateTime.substring(3,5));
+            int day = Integer.parseInt(dateTime.substring(0,2));
+
+            int more = year * 3154 * 10000000 + month * 2628 * 1000000 + (day-1) * 86400000;
+            long targetTime = more + year2000;8*/
+
+            /*AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(Import.this, TaskNotificationReceiver.class);
+            intent.putExtra("subject", subject);
+            intent.putExtra("dateTime", dateTime);
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(Import.this, unique, intent, 0);
+            // set for 1 day early;
+            //alarmMgr.set(AlarmManager.RTC, intervalOneDay, alarmIntent);
+            //alarmMgr.set(AlarmManager.RTC, timeNow + 60000, alarmIntent);
+            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,timeNow,AlarmManager.INTERVAL_DAY,alarmIntent);*/
+        }
+    }
+
+    public void setNotification(String subject, String dateTime) {
+        long timeNow = java.util.Calendar.getInstance().getTimeInMillis();
+        int unique = (int) timeNow;
+        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(Import.this, TaskNotificationReceiver.class);
+        intent.putExtra("subject", subject);
+        intent.putExtra("dateTime", dateTime);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(Import.this, unique, intent, 0);
+        // set for 1 day early;
+        //alarmMgr.set(AlarmManager.RTC, intervalOneDay, alarmIntent);
+        //alarmMgr.set(AlarmManager.RTC, timeNow + 60000, alarmIntent);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,timeNow,AlarmManager.INTERVAL_DAY,alarmIntent);
     }
 
     /**
@@ -253,7 +319,7 @@ public class Import extends AppCompatActivity {
          **/
         private List<String> getDataFromApi() throws IOException {
             // List the next 10 events from the primary calendar.
-           // int i=0;
+            // int i=0;
             //date_array = new String[10];
             DateTime now = new DateTime(System.currentTimeMillis());
             List<String> eventStrings = new ArrayList<String>();
@@ -275,9 +341,26 @@ public class Import extends AppCompatActivity {
                         String.format("%s (%s)", event.getSummary(), start));
                 //DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 //String date = dateFormat.format(start);
-              //  date_array[i]=date.toString();
-              //  i++;
+                //  date_array[i]=date.toString();
+                //  i++;
             }
+
+            //testing purpose
+            // format the getDateTime()
+            //DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy     hh:mm");
+            //String date = dateFormat.format(event.getDateTime());
+            //String.format("%s (%s)", event.getSummary(), date);
+            //String task1 = "hello this is exam1 (07-11-2016     13:50)";
+            //String task2 = "and this is exam2 (07-11-2016     14:50)";
+
+
+
+
+            //String.format("%s (%s)", event.getSummary(), event.getDate());
+            //String task1 = "hello this is task1 (2015-12-04)";
+            //String task2 = "and this is task2 (2015-12-05)";
+            //eventStrings.add(task1);
+            //eventStrings.add(task2);
             return eventStrings;
         }
 
@@ -311,39 +394,70 @@ public class Import extends AppCompatActivity {
                 //mOutputText.setText(TextUtils.join("\n", output));
             }
         }
-/*
-        private CompoundButton.OnCheckedChangeListener handlecheck (final CheckBox chk, int i) {
-            //final String dateT = date_array[i];
-            //final String subject = chk.getText().toString();
+        /*
+                private CompoundButton.OnCheckedChangeListener handlecheck (final CheckBox chk, int i) {
+                    //final String dateT = date_array[i];
+                    //final String subject = chk.getText().toString();
+                    return new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if (isChecked) {
+                                if (savedChecker.validate(subject, dateT)) {
+                                    if (savedChecker.createTask(subject, dateT, subject, subject)) {
+                                        Toast.makeText(getApplicationContext(), " Task Added " + chk.getTag(),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                }
+        */
+        private boolean onceChecked = false;
+        private CompoundButton.OnCheckedChangeListener handlecheck (final CheckBox chk) {
             return new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    //add event to task
+                    //tasksDB = new TasksDB(getApplicationContext());
+                    String event = chk.getTag().toString();
+                    int length = event.length();
+                    int lengthofTime = 10;
+                    int timeEndIndex = length - 1;
+                    int timeStartIndex = length - 1 - lengthofTime;
+                    int subjectEndIndex = timeStartIndex - 2;
+                    String timeT = event.substring(timeStartIndex,timeEndIndex);
+                    String year = timeT.substring(0,4);
+                    String month = timeT.substring(5,7);
+                    String day = timeT.substring(8,10);
+                    String time = day + "-" + month + "-" + year;
+                    String subject = event.substring(0, subjectEndIndex);
+                    Task curTask = new Task(subject, time, "", "");
                     if (isChecked) {
-                        if (savedChecker.validate(subject, dateT)) {
+                        if(!tasksDB.isTaskExist(subject)) {
+                            Toast.makeText(getApplicationContext(), " Task Added " + chk.getTag(),
+                                    Toast.LENGTH_LONG).show();
+                            onceChecked = true;
 
-                            if (savedChecker.createTask(subject, dateT, subject, subject)) {
-                                Toast.makeText(getApplicationContext(), " Task Added " + chk.getTag(),
-                                        Toast.LENGTH_LONG).show();
-                            }
+                            tasksDB.insertTask(subject, time, "", "");
+                            //noti.add(curTask);
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), " Task already exists",
+                                    Toast.LENGTH_LONG).show();
+
                         }
                     }
+                    if (!isChecked && onceChecked) {
+                        Toast.makeText(getApplicationContext(), " Task Deleted " + chk.getTag(),
+                                Toast.LENGTH_LONG).show();
+                        tasksDB.deleteTask(subject);
+                        //noti.remove(curTask);
+                    }
+
                 }
             };
         }
-*/
-private CompoundButton.OnCheckedChangeListener handlecheck (final CheckBox chk) {
-    return new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked) {
-
-                Toast.makeText(getApplicationContext(), " Task Added " + chk.getTag(),
-                        Toast.LENGTH_LONG).show();
-            }
-
-        }
-    };
-}
 
         @Override
         protected void onCancelled() {

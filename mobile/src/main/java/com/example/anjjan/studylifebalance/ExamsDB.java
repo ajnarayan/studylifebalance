@@ -81,7 +81,7 @@ public class ExamsDB extends SQLiteOpenHelper{
     }
 
 
-    public boolean isExamExist(String subject, String newDateTime) {
+    public boolean isExamExist(String subject) {
         String dateTime = getDateTime(subject);
         //if (dateTime == newDateTime) return false;
         return (dateTime != null) ;
@@ -97,7 +97,7 @@ public class ExamsDB extends SQLiteOpenHelper{
      * @return
      */
     public boolean insertExam(String subject, String dateTime, String seat, String room) {
-        if (isExamExist(subject, dateTime)) {
+        if (isExamExist(subject)) {
             return false;
         }
         SQLiteDatabase db =  this.getWritableDatabase();

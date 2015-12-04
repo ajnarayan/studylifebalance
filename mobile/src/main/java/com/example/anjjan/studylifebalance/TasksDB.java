@@ -76,7 +76,7 @@ public class TasksDB extends SQLiteOpenHelper{
     }
 
 
-    public boolean isTaskExist(String subject, String newDate) {
+    public boolean isTaskExist(String subject) {
         String date = getTaskDate(subject);
         return (date != null);
     }
@@ -90,7 +90,7 @@ public class TasksDB extends SQLiteOpenHelper{
      * @return
      */
     public boolean insertTask(String subject, String date, String title, String details) {
-        if (isTaskExist(subject, date)) {
+        if (isTaskExist(subject)) {
             return false;
         }
         SQLiteDatabase db =  this.getWritableDatabase();
@@ -103,6 +103,7 @@ public class TasksDB extends SQLiteOpenHelper{
         db.close();
         return re != -1;
     }
+
 
 
 

@@ -80,16 +80,15 @@ public class NavMainActivity extends AppCompatActivity
                 startActivity(newtask);
             }
         });
+
         List<Task> allTasks;
         TasksDB tasksDB;
         ListView listT = (ListView) findViewById(R.id.taskList);
         tasksDB = new TasksDB(getBaseContext());
-
         allTasks = tasksDB.getAllTasks();
-
-
         TaskListAdapter adapterT = new TaskListAdapter(getBaseContext(), allTasks);
         listT.setAdapter(adapterT);
+
         List<Exam> allExams;
         ListView listE = (ListView) findViewById(R.id.examList);
         examsDB = new ExamsDB(getBaseContext());
@@ -106,7 +105,8 @@ public class NavMainActivity extends AppCompatActivity
         }
 
     }
-    public void testDelected(ExamsDB examsDB) {
+
+    /*public void testDelected(ExamsDB examsDB) {
         List<Exam> allExams = examsDB.getAllExams();
         Date dateT = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -126,8 +126,8 @@ public class NavMainActivity extends AppCompatActivity
             //if (tar <= cur) {
                 //examsDB.deleteExam(curExam.getSubject());
             //}
-        }*/
-    }
+        }
+    }*/
 
     @Override
     public void onBackPressed() {

@@ -41,6 +41,7 @@ public class Tasks extends AppCompatActivity {
 
     private TextView textText;
     private TextView textText2;
+    private TextView textText3;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -79,6 +80,7 @@ public class Tasks extends AppCompatActivity {
         savedChecker = new CheckTask(this.getApplicationContext());
         textText = (TextView) findViewById(R.id.test);
         textText2 = (TextView) findViewById(R.id.test2);
+        textText3 = (TextView) findViewById(R.id.test3);
 
 
 
@@ -97,7 +99,7 @@ public class Tasks extends AppCompatActivity {
                 String test = "???";
                 String test2 = "2 ???";
                 // if already exists, return to enter again
-                if (savedChecker.isExist(subject, dateTime)) {
+                if (savedChecker.isExist(subject)) {
                     test = "This task schedule exists.";
                     test2 = "Please enter a new one";
                     textText.setText(test);
@@ -115,10 +117,12 @@ public class Tasks extends AppCompatActivity {
 
                         //after insert in db
 
-                        if (savedChecker.isExist(subject, dateTime)) {
+                        if (savedChecker.isExist(subject)) {
                             test2 = "Your task schedule has been saved.";
                             textText2.setText(test2);
                             setNotification(dateTime);
+                            //String test3 = "" + date;
+                            //textText3.setText(test3);
                             Intent newtask2 = new Intent(getBaseContext(),NavMainActivity.class);
                             startActivity(newtask2);
                         }

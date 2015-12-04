@@ -33,11 +33,9 @@ public class CheckExam {
     public boolean createExam(String subject, String dateTime, String seat, String room) {
         return examsDB.insertExam(subject, dateTime, seat, room);
     }
-    public void deleteExamBySubject(String subject) {
-        examsDB.deleteExam(subject);
-    }
-    public boolean isExist(String subject, String dateTime) {
-        return examsDB.isExamExist(subject, dateTime);
+
+    public boolean isExist(String subject) {
+        return examsDB.isExamExist(subject);
     }
 
 }

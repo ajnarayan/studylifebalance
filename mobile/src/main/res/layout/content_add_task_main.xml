@@ -77,6 +77,13 @@
             android:ems="10"
             android:id="@+id/test2"
             android:hint="" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:id="@+id/test3"
+            android:hint="" />
 
     </LinearLayout>
 </RelativeLayout>

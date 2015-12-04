@@ -34,8 +34,8 @@ public class CheckTask {
     public boolean createTask(String subject, String date, String title, String details) {
         return tasksDB.insertTask(subject, date, title, details);
     }
-    public boolean isExist(String subject, String date) {
-        return tasksDB.isTaskExist(subject, date);
+    public boolean isExist(String subject) {
+        return tasksDB.isTaskExist(subject);
     }
 }
 
