@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">StudyLifeBalance</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_add_task_main">AddTaskMainActivity</string>
+    <string name="title_activity_exams">Exams</string>
+    <string name="title_activity_vibrate">Vibrate</string>
+    <string name="title_activity_import">Import</string>
+    <string name="title_activity_notifications">Notifications</string>
+    <string name="title_activity_message">Message</string>
+    <string name="title_activity_new">New</string>
+    <string name="title_activity_show_exam_list">ShowExamList</string>
+    <string name="title_activity_show_task_list">ShowTaskList</string>
+</resources>

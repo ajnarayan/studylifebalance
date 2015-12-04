@@ -1,3 +1,2 @@
 # studylifebalance
-Android Schedule management Application 
-
+A time management android application
